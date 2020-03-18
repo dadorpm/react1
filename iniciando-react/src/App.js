@@ -2,25 +2,30 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
+function Funcionalidade() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <h1>Hello World</h1>
   );
+}
+class App extends React.Component{
+  state = {
+    name:''
+  }
+  modificarNome = (e) => {
+      let nome = e.target.value;
+      this.setState({
+        name:nome
+      })
+  }
+  render(){
+    return(
+      <>
+        <h1>Hello World by {this.state.name}</h1>
+        <input type="text" value={this.state.name} onChange={this.modificarNome}/>
+        <p>bufa azeda</p>
+      </>
+    )
+  }
 }
 
 export default App;
