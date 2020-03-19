@@ -7,11 +7,11 @@ import CadastroProduto from './views/produtos/cadastro';
 export default () => {
     return(
         <HashRouter>
-            <switch>
+            <Switch>
                 <Route exact path="/" component={Home}/>
                 <Route exact path="/cadastro-produto" component={CadastroProduto} />
 
-            </switch>
+            </Switch>
         </HashRouter>
     )
 }
