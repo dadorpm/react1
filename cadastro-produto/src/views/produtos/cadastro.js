@@ -1,13 +1,22 @@
 import React from 'react';
+import ProdutoService from '../../app/ProdutoService';
+
 const estadoInicial = {
     nome : '',
     sku : '',
     descricao : '',
     preco : 0,
-    fornecedor : ''
+    fornecedor : '',
+    sucesso : false,
+    error : []
 }
 export default class CadastroProduto extends React.Component{
     state = estadoInicial;
+    constructor(){
+        super();
+        this.service = new ProdutoService();
+
+    }
     onChange = (event) => {
         const valor = event.target.value;
         const campo = event.target.name;
@@ -16,7 +25,21 @@ export default class CadastroProduto extends React.Component{
         })
     }
     onSubmit = (event) => {
-        console.log(this.state);
+        const produto = {
+            nome : this.state.nome,
+            sku : this.state.sku,
+            descricao : this.state.descricao,
+            preco : this.state.preco,
+            fornecedor : this.state.fornecedor
+        }
+        try{
+            this.service.salvar(produto);
+            this.setState(estadoInicial);
+            this.setState({sucesso : true});
+        }catch(erro){
+            const errors = erro.errors;
+            this.setState({ error : errors})
+        }
     }
     limpar = (event) => {
         this.setState(estadoInicial)
@@ -28,6 +51,24 @@ export default class CadastroProduto extends React.Component{
                     <h4 className="card-title">Cadastro Produto</h4>
                 </div>
                 <div className="card-body">
+                    {
+                        this.state.sucesso &&
+                        <div class="alert alert-dismissible alert-success">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <strong>Bem feito!</strong> Cadastro feito com sucesso.
+                        </div>
+                    }
+                    {this.state.error.length>0 &&
+                        this.state.error.map(msg => {
+                            return(
+                                <div class="alert alert-dismissible alert-danger">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <strong>Erro!</strong> {msg}
+                                </div>
+                                )
+                        })
+                        
+                    }
                     <div className="row">
                         <div className="col-md-6">
                             <div className="form-group">
