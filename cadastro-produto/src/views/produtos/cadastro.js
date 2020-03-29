@@ -8,7 +8,8 @@ const estadoInicial = {
     preco : 0,
     fornecedor : '',
     sucesso : false,
-    error : []
+    error : [],
+    atualizacao: false
 }
 export default class CadastroProduto extends React.Component{
     state = estadoInicial;
@@ -24,6 +25,7 @@ export default class CadastroProduto extends React.Component{
             [campo]:valor
         })
     }
+
     onSubmit = (event) => {
         const produto = {
             nome : this.state.nome,
@@ -44,25 +46,36 @@ export default class CadastroProduto extends React.Component{
     limpar = (event) => {
         this.setState(estadoInicial)
     }
+    componentDidMount(){
+        const sku = this.props.match.params.sku;
+        if(sku){
+            const produto = this.service.ler().filter(p => p.sku === sku);
+            if(produto.length === 1){
+                const resultado = produto[0];
+                this.setState({...resultado, atualizacao : true})
+            }
+
+        }
+    }
     render(){
         return(
             <div className="card">
                 <div className="card-header">
-                    <h4 className="card-title">Cadastro Produto</h4>
+                     <h4 className="card-title">{this.state.atualizacao?"Atualizando":"Cadastro"} de Produto</h4>
                 </div>
                 <div className="card-body">
                     {
                         this.state.sucesso &&
-                        <div class="alert alert-dismissible alert-success">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <div className="alert alert-dismissible alert-success">
+                            <button type="button" className="close" data-dismiss="alert">&times;</button>
                             <strong>Bem feito!</strong> Cadastro feito com sucesso.
                         </div>
                     }
                     {this.state.error.length>0 &&
                         this.state.error.map(msg => {
                             return(
-                                <div class="alert alert-dismissible alert-danger">
-                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <div className="alert alert-dismissible alert-danger">
+                                    <button type="button" className="close" data-dismiss="alert">&times;</button>
                                     <strong>Erro!</strong> {msg}
                                 </div>
                                 )
@@ -79,7 +92,7 @@ export default class CadastroProduto extends React.Component{
                         <div className="col-md-6">
                             <div className="form-group">
                                     <label>SKU</label>
-                                    <input name="sku" onChange={this.onChange} className="form-control" value={this.state.sku} type="text"/>
+                                    <input name="sku" disabled={this.state.atualizacao?"disabled":""} onChange={this.onChange} className="form-control" value={this.state.sku} type="text"/>
                             </div>
                         </div>
                     </div>
@@ -107,7 +120,7 @@ export default class CadastroProduto extends React.Component{
                     </div>
                     <div className="row">
                         <div className="col-md-1">
-                            <button className="btn btn-success" onClick={this.onSubmit}>Enviar</button>
+                            <button className="btn btn-success" onClick={this.onSubmit}>{this.state.atualizacao?"Atualizar":"Enviar"}</button>
                         </div>
                         <div className="col-md-1">
                             <button className="btn btn-primary" onClick={this.limpar}>Limpar</button>

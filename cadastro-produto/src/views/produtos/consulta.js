@@ -11,6 +11,13 @@ export default class ConsultaProdutos extends React.Component{
     componentDidMount(){
         this.setState({produto : this.service.ler() })
     }
+    editar = (sku) => {
+        return "http://localhost:3000/#/cadastro-produto/"+sku;
+    }
+    deletar = (sku) => {
+            const produtos = this.service.deletar(sku);
+            this.setState({produto:produtos})
+    }
     render(){
         return(
             <div className="card">
@@ -37,7 +44,7 @@ export default class ConsultaProdutos extends React.Component{
                                             <th>{produto.sku}</th>
                                             <th>{produto.preco}</th>
                                             <th>{produto.fornecedor}</th>
-                                            <th></th>
+                                            <th><a className="btn btn-primary" href={this.editar(produto.sku)}>Editar</a><button onClick={() => this.deletar(produto.sku)} className="btn btn-danger">Excluir</button></th>
                                         </tr>
                                     )
                                 })

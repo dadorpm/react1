@@ -29,15 +29,42 @@ export default class ProdutoService{
         }else{
             produtos = JSON.parse(produtos);
         }
+        const index = this.index(produto.sku);
+        if( index === null){
+            produtos.push(produto);
+        }else{
+            produtos[index] = produto;
+        }
 
-        produtos.push(produto);
         localStorage.setItem(PRODUTO, JSON.stringify(produtos));
 
 
     }
+    index = (sku) => {
+        let index = null
+        this.ler().forEach((produto, i) => {
+            if(produto.sku === sku){
+                index = i;
+            }
+        })
+        return index;
+    }
+
+    deletar = (sku) => {
+        const index = this.index(sku);
+        if(index !== null){
+            const produtos = this.ler();
+            produtos.splice(index, 1);
+            localStorage.setItem(PRODUTO, JSON.stringify(produtos));
+            return produtos;
+        }
+    }
+
     ler = () => {
         const produtos = localStorage.getItem(PRODUTO);
+        if(!produtos){
+            return [];
+        }
         return  JSON.parse(produtos);
-
     }
 }
